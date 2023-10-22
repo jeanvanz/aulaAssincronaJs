@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" style="height: 100%;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Busca Cep - Jean Folle Vanz</title>
 </head>
-<body>
-    <form id="frmCepSearch">
+<body style="background: black; padding: 20%;">
+    <form id="frmCepSearch" style="color: lavender; 
+    display: flex; justify-content: center; align-items: center;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
         <label for="cepSearch">
             Informe seu CEP:
         </label>
@@ -17,29 +19,53 @@
         required
         placeholder="Digite seu CEP somente números"
         >
-
-        <script>
-            function correctInput(cepValue){
-                
-                if (isNaN(cepValue)){
-                    return "Digite apenas números"
-                    alert("Digite apenas números")
-                }
-                return cepValue
-            }
-
-            const frmCepSearch = document.querySelector("#frmCepSearch");
-
-            frmCepSearch.addEventListener("submit", function(event){
-                event.preventDefault();
-                
-
-                const cepValue = frmCepSearch.cepSearch.value;
-
-                console.log(correctInput(cepValue));
-                
-            });
-        </script>
     </form>
+
+    <h1 id="showCepInfo" style="color: lavender; 
+    display: flex; justify-content: center; align-items: center;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;"> 
+    </h1>
+    <script>
+        function correctInput(cepValue){
+            var cepValue = document.getElementById("cepSearch").value;
+
+            if (isNaN(cepValue)){
+                alert("Digite apenas números");
+                return "Digite apenas números";
+            }
+            return cepValue
+        }
+
+        const frmCepSearch = document.querySelector("#frmCepSearch");
+
+        const showCepInfo = document.querySelector("#showCepInfo")
+
+        frmCepSearch.addEventListener("submit", function(event){
+            event.preventDefault();
+            
+
+            const cepValue = frmCepSearch.cepSearch.value;
+
+            const correctValue = correctInput(cepValue);
+
+            //console.log(correctInput(cepValue));
+
+            const request = fetch(`https://viacep.com.br/ws/${cepValue}/json/`);
+
+            request
+                .then(function(response){
+                    return response.json();
+                })
+                .then(function(cepData){
+                    //console.log("Dados do CEP", cepData);
+
+                    showCepInfo.textContent = `Cidade: ${cepData.localidade}, UF: ${cepData.uf}`
+                })
+                .catch(function(){
+                    console.log("Deu errado!")
+                });
+            
+        });
+    </script>
 </body>
 </html>
